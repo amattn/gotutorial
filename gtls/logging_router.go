@@ -8,16 +8,18 @@ import (
 
 type LoggingRouter struct {
 	adminHandler *AdminHandler
+	linksHandler *LinksHandler
 }
 
 func NewLoggingRouter() *LoggingRouter {
 	lr := new(LoggingRouter)
 	lr.adminHandler = new(AdminHandler)
+	lr.linksHandler = NewLinksHandler()
 	return lr
 }
 
 type SimpleRouteHandler interface {
-	Respond(req *http.Request) (statusCode int, responseBytes []byte)
+	Respond(req *http.Request) (statusCode int, headers map[string]string, responseBytes []byte)
 }
 
 // At a high level, a router inspects a request and routes it to an appropriate subcomponent for handling.
@@ -27,13 +29,18 @@ func (router *LoggingRouter) ServeHTTP(w http.ResponseWriter, req *http.Request)
 	url := req.URL.Path
 	var code int
 	responseBytes := []byte{}
+	extra_headers := map[string]string{}
 
 	if strings.HasPrefix(url, "/admin/") {
 		// use the admin handler
-		code, responseBytes = router.adminHandler.Respond(req)
+		code, extra_headers, responseBytes = router.adminHandler.Respond(req)
 	} else {
-		code = http.StatusBadRequest
-		responseBytes = []byte("Bad Request")
+		// use the shortlink handler
+		code, extra_headers, responseBytes = router.linksHandler.Respond(req)
+	}
+
+	for k, v := range extra_headers {
+		w.Header().Add(k, v)
 	}
 
 	w.WriteHeader(code)
