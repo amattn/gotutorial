@@ -12,9 +12,8 @@ const (
 func main() {
 	log.Println("gtls", Version(), "build", BuildNumber())
 
-	logging_handler := new(LoggingHandler)
-	http.Handle("/", logging_handler)
+	router := NewLoggingRouter()
 
 	log.Println("Listening from:", LISTEN_ADDRESS)
-	log.Fatal(http.ListenAndServe(LISTEN_ADDRESS, nil))
+	log.Fatal(http.ListenAndServe(LISTEN_ADDRESS, router))
 }
