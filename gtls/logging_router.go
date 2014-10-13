@@ -31,7 +31,10 @@ func (router *LoggingRouter) ServeHTTP(w http.ResponseWriter, req *http.Request)
 	responseBytes := []byte{}
 	extra_headers := map[string]string{}
 
-	if strings.HasPrefix(url, "/admin/") {
+	if url == "/" {
+		code = http.StatusOK
+		responseBytes = []byte("Welcome to gtls")
+	} else if strings.HasPrefix(url, "/admin/") {
 		// use the admin handler
 		code, extra_headers, responseBytes = router.adminHandler.Respond(req)
 	} else {

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"net/http"
 	"strings"
 )
@@ -32,7 +31,6 @@ func (handler *LinksHandler) Respond(req *http.Request) (statusCode int, headers
 	}
 
 	longurl := handler.linksDB[shortcode]
-	log.Println(shortcode, longurl)
 
 	if longurl != "" {
 		headers := map[string]string{"Location": longurl}
