@@ -3,16 +3,13 @@ package main
 import (
 	"fmt"
 	"html"
-	"log"
 	"net/http"
 )
 
 type AdminHandler struct {
 }
 
-func (handler *AdminHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	output := fmt.Sprintf("Hello World, you came from: %q", html.EscapeString(req.URL.Path))
-	outputBytes := []byte(output)
-	w.Write(outputBytes)
-	log.Printf("%s", CommonLogFormat(req, http.StatusOK, len(outputBytes)))
+func (handler *AdminHandler) Respond(req *http.Request) (statusCode int, responseBytes []byte) {
+	response := fmt.Sprintf("Hello World, you came from: %q", html.EscapeString(req.URL.Path))
+	return http.StatusOK, []byte(response)
 }

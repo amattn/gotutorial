@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 	"strings"
 )
@@ -15,17 +16,30 @@ func NewLoggingRouter() *LoggingRouter {
 	return lr
 }
 
+type SimpleRouteHandler interface {
+	Respond(req *http.Request) (statusCode int, responseBytes []byte)
+}
+
 // At a high level, a router inspects a request and routes it to an appropriate subcomponent for handling.
 // Here, we just look for a simple prefix
 func (router *LoggingRouter) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 	url := req.URL.Path
+	var code int
+	responseBytes := []byte{}
+
 	if strings.HasPrefix(url, "/admin/") {
 		// use the admin handler
-		router.adminHandler.ServeHTTP(w, req)
+		code, responseBytes = router.adminHandler.Respond(req)
+	} else {
+		code = http.StatusBadRequest
+		responseBytes = []byte("Bad Request")
 	}
 
-	// error for now
-	w.WriteHeader(http.StatusBadRequest)
-	w.Write([]byte("Bad Request"))
+	w.WriteHeader(code)
+	writtenCount, err := w.Write(responseBytes)
+	if err != nil {
+		log.Println("error writing response", req, err)
+	}
+	log.Printf("%s", CommonLogFormat(req, code, writtenCount))
 }
