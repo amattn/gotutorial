@@ -25,7 +25,7 @@ func init() {
 	link_added_template = template.Must(template.New("link_added").Parse(link_added_template_source))
 }
 
-func LinkAddedTemplateOutput(url, code string) []byte {
+func LinkAddedTemplateOutput(code, url string) []byte {
 	buf := new(bytes.Buffer)
 	data := TemplateData{
 		URL:  url,

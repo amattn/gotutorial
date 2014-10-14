@@ -6,9 +6,9 @@ type AdminHandler struct {
 	BaseHandler
 }
 
-func NewAdminHandler(linksDB map[string]string) *AdminHandler {
+func NewAdminHandler(linkstore *LinkStore) *AdminHandler {
 	handler := new(AdminHandler)
-	handler.BaseHandler = MakeBaseHandler(linksDB)
+	handler.BaseHandler = MakeBaseHandler(linkstore)
 	return handler
 }
 
@@ -35,8 +35,10 @@ func (handler *AdminHandler) PostResponse(req *http.Request) (statusCode int, he
 	url_path := req.URL.Path
 	switch url_path {
 	case "/admin/post":
-		handler.linksDB[req.FormValue("code")] = req.FormValue("url")
-		output := LinkAddedTemplateOutput(req.FormValue("url"), req.FormValue("code"))
+		code := req.FormValue("code")
+		url := req.FormValue("url")
+		handler.linkstore.AddShortlink(code, url)
+		output := LinkAddedTemplateOutput(code, url)
 		// normally you want to redirect instead of returning direction...
 		// otherwise the user can reload and unintentionally post the same data multiple times.
 		return http.StatusOK, nil, output

@@ -1,10 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"net/url"
 	"testing"
+	"time"
 )
 
 func TestWorkingAdminLinks(t *testing.T) {
@@ -34,7 +36,7 @@ func TestGetAPostRoute(t *testing.T) {
 }
 
 func TestCreateShortlink(t *testing.T) {
-	short_code := "TestCreateShortlink"
+	short_code := fmt.Sprintf("TestCreateShortlink_%d", time.Now().UnixNano())
 
 	// first test to make sure our short code returns 404
 	short_url := test_server.URL + "/" + short_code
