@@ -36,16 +36,32 @@ func TestGetAPostRoute(t *testing.T) {
 }
 
 func TestCreateShortlink(t *testing.T) {
-	post_url := test_server.URL + "/admin/post"
+	short_code := "TestCreateShortlink"
 
+	// first test to make sure our short code returns 404
+	short_url := test_server.URL + "/" + short_code
+	res, err := http.Get(short_url)
+	if err != nil {
+		log.Fatal(1819562567, short_url, err)
+	}
+	assertEqual(t, 404, res.StatusCode, short_url)
+
+	// post our form
+	post_url := test_server.URL + "/admin/post"
 	client := http.Client{}
 	form_vals := url.Values{}
 	form_vals.Add("url", "http://twitter.com/GoTutorialNet")
-	res, err := client.PostForm(post_url, form_vals)
+	form_vals.Add("code", short_code)
+	res, err = client.PostForm(post_url, form_vals)
 	if err != nil {
 		log.Fatal(1819562566, post_url, err)
 	}
-
 	assertEqual(t, 200, res.StatusCode, post_url)
 
+	// check to make sure our short code works after posting
+	res, err = http.Get(short_url)
+	if err != nil {
+		log.Fatal(1819562567, post_url, err)
+	}
+	assertEqual(t, 200, res.StatusCode, post_url)
 }

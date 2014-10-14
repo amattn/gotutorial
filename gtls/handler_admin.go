@@ -21,7 +21,7 @@ func (handler *AdminHandler) Respond(req *http.Request) (statusCode int, headers
 	switch url_path {
 	case "/admin/post":
 		if req.Method == "POST" {
-			// temporary just respond okay
+			handler.linksDB[req.FormValue("code")] = req.FormValue("url")
 			return http.StatusOK, nil, []byte("ok")
 		} else {
 			return http.StatusMethodNotAllowed, nil, []byte("Method not allowed")
