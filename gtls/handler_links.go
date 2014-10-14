@@ -6,14 +6,12 @@ import (
 )
 
 type LinksHandler struct {
-	constructorCanary bool
-	linksDB           map[string]string
+	BaseHandler
 }
 
-func NewLinksHandler() *LinksHandler {
+func NewLinksHandler(linksDB map[string]string) *LinksHandler {
 	handler := new(LinksHandler)
-	handler.constructorCanary = true
-	handler.linksDB = make(map[string]string)
+	handler.BaseHandler = MakeBaseHandler(linksDB)
 
 	handler.linksDB["a"] = "http://golang.org"
 	handler.linksDB["b"] = "http://tour.golang.org"

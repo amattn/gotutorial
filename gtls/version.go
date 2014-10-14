@@ -1,7 +1,7 @@
 package main
 
 const (
-	internal_BUILD_NUMBER   = 7
+	internal_BUILD_NUMBER   = 8
 	internal_VERSION_STRING = "0.0.1"
 )
 

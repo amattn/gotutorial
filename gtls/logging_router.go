@@ -11,10 +11,23 @@ type LoggingRouter struct {
 	linksHandler *LinksHandler
 }
 
+type BaseHandler struct {
+	constructorCanary bool
+	linksDB           map[string]string
+}
+
+func MakeBaseHandler(linksDB map[string]string) BaseHandler {
+	return BaseHandler{
+		constructorCanary: true,
+		linksDB:           linksDB,
+	}
+}
+
 func NewLoggingRouter() *LoggingRouter {
 	lr := new(LoggingRouter)
-	lr.adminHandler = new(AdminHandler)
-	lr.linksHandler = NewLinksHandler()
+	linksDB := map[string]string{}
+	lr.adminHandler = NewAdminHandler(linksDB)
+	lr.linksHandler = NewLinksHandler(linksDB)
 	return lr
 }
 
