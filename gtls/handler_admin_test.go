@@ -12,6 +12,7 @@ import (
 func TestWorkingAdminLinks(t *testing.T) {
 	not_found_paths := []string{
 		"admin/add",
+		"admin/list",
 	}
 
 	for i, subpath := range not_found_paths {

@@ -48,3 +48,30 @@ func (ls LinkStore) GetShortlink(code string) (string, error) {
 	}
 	return url, nil
 }
+
+func (ls LinkStore) GetAllShortlinks() ([]ShortlinkTemplateData, error) {
+	links := []ShortlinkTemplateData{}
+
+	rows, err := ls.db.Query("SELECT code, url from links")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	// scan all rows
+	for rows.Next() {
+		var code string
+		var url string
+		err := rows.Scan(&code, &url)
+		if err != nil {
+			return nil, err
+		}
+		links = append(links, ShortlinkTemplateData{code, url})
+	}
+
+	err = rows.Err()
+	if err != nil {
+		return nil, err
+	}
+	return links, nil
+}

@@ -46,13 +46,13 @@ func (router *LoggingRouter) ServeHTTP(w http.ResponseWriter, req *http.Request)
 	switch {
 	case url == "/":
 		code = http.StatusOK
-		responseBytes = []byte("Welcome to gtls")
+		responseBytes = []byte("<html>Welcome to gtls : <a href=\"/admin/list\">list</a> - <a href=\"/admin/add\">add</a></html>")
 	case url == "/admin/add":
-		// use the admin handler
 		code, extra_headers, responseBytes = router.adminHandler.AddShortlinkFormResponse(req)
 	case url == "/admin/post":
-		// use the admin handler
 		code, extra_headers, responseBytes = router.adminHandler.PostResponse(req)
+	case url == "/admin/list":
+		code, extra_headers, responseBytes = router.adminHandler.ListAllShortlinks(req)
 	default:
 		// use the shortlink handler
 		code, extra_headers, responseBytes = router.linksHandler.Respond(req)

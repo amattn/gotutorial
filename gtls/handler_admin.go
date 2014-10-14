@@ -12,6 +12,20 @@ func NewAdminHandler(linkstore *LinkStore) *AdminHandler {
 	return handler
 }
 
+func (handler *AdminHandler) ListAllShortlinks(req *http.Request) (statusCode int, headers map[string]string, responseBytes []byte) {
+	if req.Method != "GET" {
+		return http.StatusMethodNotAllowed, nil, []byte("Method not allowed")
+	}
+
+	all_shortlinks, err := handler.linkstore.GetAllShortlinks()
+	if err != nil {
+		return http.StatusInternalServerError, nil, []byte("Internal Server Error")
+	}
+
+	output := ListAllTemplateOutput(ListAllTemplateData{all_shortlinks})
+	return http.StatusOK, nil, output
+}
+
 func (handler *AdminHandler) AddShortlinkFormResponse(req *http.Request) (statusCode int, headers map[string]string, responseBytes []byte) {
 	if req.Method != "GET" {
 		return http.StatusMethodNotAllowed, nil, []byte("Method not allowed")
