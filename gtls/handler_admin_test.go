@@ -9,9 +9,7 @@ import (
 
 func TestWorkingAdminLinks(t *testing.T) {
 	not_found_paths := []string{
-		"admin/",
-		"admin/bogus",
-		"admin/asdfaf",
+		"admin/add",
 	}
 
 	for i, subpath := range not_found_paths {
@@ -58,7 +56,7 @@ func TestCreateShortlink(t *testing.T) {
 	}
 	assertEqual(t, 200, res.StatusCode, post_url)
 
-	// check to make sure our short code works after posting
+	// check to make sure our short code works after
 	res, err = http.Get(short_url)
 	if err != nil {
 		log.Fatal(1819562567, post_url, err)

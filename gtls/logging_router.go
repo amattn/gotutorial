@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 	"net/http"
-	"strings"
 )
 
 type LoggingRouter struct {
@@ -44,13 +43,17 @@ func (router *LoggingRouter) ServeHTTP(w http.ResponseWriter, req *http.Request)
 	responseBytes := []byte{}
 	extra_headers := map[string]string{}
 
-	if url == "/" {
+	switch {
+	case url == "/":
 		code = http.StatusOK
 		responseBytes = []byte("Welcome to gtls")
-	} else if strings.HasPrefix(url, "/admin/") {
+	case url == "/admin/add":
 		// use the admin handler
-		code, extra_headers, responseBytes = router.adminHandler.Respond(req)
-	} else {
+		code, extra_headers, responseBytes = router.adminHandler.AddShortlinkFormResponse(req)
+	case url == "/admin/post":
+		// use the admin handler
+		code, extra_headers, responseBytes = router.adminHandler.PostResponse(req)
+	default:
 		// use the shortlink handler
 		code, extra_headers, responseBytes = router.linksHandler.Respond(req)
 	}
